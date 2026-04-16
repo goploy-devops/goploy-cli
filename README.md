@@ -2,70 +2,70 @@
 [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)](https://nodejs.org/)
 [![npm version](https://img.shields.io/npm/v/goploy-cli.svg)](https://www.npmjs.com/package/goploy-cli)
 
-[中文](./README.md) | [English](./README.en.md)
+[English](./README.md) | [中文](./README.zh.md)
 
 # goploy-cli
 
-[Goploy](https://github.com/zhenorzz/goploy) 官方 CLI 工具 — 让人类和 AI Agent 都能在终端中部署代码。支持项目列表、部署触发、状态查询、日志追踪、版本回滚等核心功能，提供 8+ 命令及 MCP 服务器集成。
+Official CLI tool for [Goploy](https://github.com/zhenorzz/goploy) — enabling both humans and AI Agents to deploy code from the terminal. Supports project listing, deployment triggering, status querying, log tracing, version rollback and more with 8+ commands and MCP server integration.
 
-已支持 Goploy ≥ 1.17.5
+Tested against Goploy ≥ 1.17.5
 
-[安装](#安装与快速开始) · [为什么选择](#为什么选择-goploy-cli) · [功能](#功能) · [快速开始](#快速开始) · [MCP 服务器](#mcp-服务器) · [进阶用法](#进阶用法) · [安全](#安全与风险提示使用前必读) · [贡献](#贡献)
+[Installation](#installation--quick-start) · [Why goploy-cli](#why-choose-goploy-cli) · [Features](#features) · [Getting Started](#getting-started) · [MCP Server](#mcp-server-ai-agent-integration) · [Advanced Usage](#advanced-usage) · [Security](#security--risk-warnings-please-read-before-use) · [Contributing](#contributing)
 
-## 为什么选择 goploy-cli？
+## Why Choose goploy-cli?
 
-- **为 Agent 原生设计** — 与 LLM 无缝集成，提供 MCP 服务器支持，22+ 个精选命令经过 AI 实测验证
-- **一键部署** — 支持按项目名称或 ID 部署，灵活指定分支或提交号，无需手动登录 Web UI
-- **实时监控** — 部署状态实时查询、日志追踪、进度轮询，快速发现部署问题
-- **智能回滚** — 一条命令快速回滚到前一版本，支持部署历史查询
-- **开源零门槛** — MIT 协议，`npm install` 即可使用，支持全球 npm 源
-- **生产就绪** — 内置错误处理、超时控制、连接池管理，适合 CI/CD 自动化集成
+- **AI-Native Design** — Seamless LLM integration with MCP server support, 8+ carefully curated commands verified through AI testing
+- **One-Click Deploy** — Deploy by project name or ID, flexibly specify branches or commit hashes without manual Web UI login
+- **Real-Time Monitoring** — Real-time deployment status queries, log tracing, progress polling for quick issue detection
+- **Smart Rollback** — Roll back to previous version with a single command, support deployment history queries
+- **Open Source, Zero Barriers** — MIT licensed, install with `npm install`, global npm registry support
+- **Production Ready** — Built-in error handling, timeout control, connection pooling, perfect for CI/CD automation
 
-## 功能
+## Features
 
-| 类别 | 能力 |
-|------|------|
-| 📦 项目管理 | 列表查询、按关键词筛选、支持项目名称和 ID 两种标识 |
-| 🚀 部署操作 | 触发部署、指定分支/提交号、实时状态查询、日志追踪 |
-| 📊 状态监控 | 单次快照查询、轮询等待完成、自定义超时控制 |
-| 📜 历史管理 | 部署历史查询、版本回滚、前一版本快速恢复 |
-| 🔒 多租户 | 支持命名空间隔离、多项目并行管理 |
-| 🤖 AI 友好 | MCP 服务器集成、结构化 JSON 输出、命令链组合 |
+| Category | Capabilities |
+|----------|-------------|
+| 📦 Project Management | List queries, keyword filtering, support both project names and IDs |
+| 🚀 Deployment Operations | Trigger deployments, specify branches/commits, real-time status queries, log tracing |
+| 📊 Status Monitoring | One-time snapshot queries, polling until completion, custom timeout control |
+| 📜 History Management | Deployment history queries, version rollback, quick recovery to previous version |
+| 🔒 Multi-Tenancy | Namespace isolation support, multi-project parallel management |
+| 🤖 AI-Friendly | MCP server integration, structured JSON output, command chaining |
 
-## 安装与快速开始
+## Installation & Quick Start
 
-### 环境要求
+### Requirements
 
-开始之前，请确保具备以下条件：
+Before you start, make sure you have:
 
-- Node.js ≥ 18.0.0（`npm`/`npx`）
-- 有效的 Goploy 服务器和 API 密钥
+- Node.js ≥ 18.0.0 (`npm`/`npx`)
+- A valid Goploy server and API key
 
-### 快速开始（人类用户）
+### Quick Start (for Humans)
 
-#### 安装
+#### Installation
 
-以下两种方式**任选其一**：
+Choose one of the following methods:
 
-**方式一 — 从 npm 安装（推荐）：**
+**Method 1 — Install from npm (recommended):**
 
 ```bash
-# 安装全局 CLI
+# Install global CLI
 npm install -g goploy-cli
 
-# 验证安装
+# Verify installation
 goploy config check
 ```
 
-**方式二 — 使用 npx（无需安装）：**
+**Method 2 — Using npx (no installation needed):**
 
 ```bash
-# 直接运行，推荐用于 CI/CD
+# Run directly, recommended for CI/CD
 npx -y goploy-cli config check
 npx -y goploy-cli ls
 ```
 
-**方式三 — 从源码安装：**
+**Method 3 — Install from source:**
 
 ```bash
 git clone https://github.com/goploy-devops/goploy-cli
@@ -75,40 +75,40 @@ npm run build
 npm link
 ```
 
-#### 配置与使用
+#### Configuration & Usage
 
 ```bash
-# 1. 设置环境变量（仅需一次）
+# 1. Set environment variables (one time only)
 export GOPLOY_URL=https://goploy.example.com
 export GOPLOY_API_KEY=your-api-key-here
-export GOPLOY_NAMESPACE_ID=1  # 可选，默认为 1
+export GOPLOY_NAMESPACE_ID=1  # Optional, default: 1
 
-# 2. 验证配置
+# 2. Verify configuration
 goploy config check
 
-# 3. 开始使用
-goploy ls                              # 列出所有项目
-goploy ls --keyword myapp              # 按关键词过滤
-goploy publish my-project --branch main # 部署到 main 分支
+# 3. Start using
+goploy ls                              # List all projects
+goploy ls --keyword myapp              # Filter by keyword
+goploy publish my-project --branch main # Deploy to main branch
 ```
 
-### 快速开始（AI Agent）
+### Quick Start (for AI Agents)
 
-> 以下步骤面向 AI Agent，部分步骤需要用户在浏览器或本地完成。
+> Steps below are for AI Agents, some steps require user assistance in browser or locally.
 
-**第 1 步 — 安装**
+**Step 1 — Installation**
 
 ```bash
-# 安装全局 CLI
+# Install global CLI
 npm install -g goploy-cli
 
-# 或使用 npx（推荐）
+# Or use npx (recommended)
 npx -y goploy-cli config check
 ```
 
-**第 2 步 — 配置环境变量**
+**Step 2 — Configure Environment Variables**
 
-> 提示用户在其系统上设置以下环境变量（或在 .env 文件中），然后重新运行命令。
+> Guide the user to set the following environment variables on their system (or in .env file), then re-run the command.
 
 ```bash
 export GOPLOY_URL=https://goploy.example.com
@@ -116,121 +116,121 @@ export GOPLOY_API_KEY=your-api-key-here
 export GOPLOY_NAMESPACE_ID=1
 ```
 
-**第 3 步 — 验证连接**
+**Step 3 — Verify Connection**
 
 ```bash
 goploy config check
 ```
 
-**第 4 步 — 执行操作**
+**Step 4 — Execute Operations**
 
 ```bash
-goploy ls --keyword my-app      # 查询项目
-goploy publish 42 --branch main # 按 ID 和分支部署
-goploy wait <token> --timeout 300  # 等待部署完成
+goploy ls --keyword my-app      # Query projects
+goploy publish 42 --branch main # Deploy by ID and branch
+goploy wait <token> --timeout 300  # Wait for deployment to complete
 ```
 
-## 环境变量配置
+## Environment Variables
 
-| 变量 | 必需 | 说明 |
-|------|------|------|
-| `GOPLOY_URL` | 是 | Goploy 服务器 URL（如 `https://goploy.example.com`） |
-| `GOPLOY_API_KEY` | 是 | API 密钥（在 Goploy UI → 用户 → API 密钥 生成） |
-| `GOPLOY_NAMESPACE_ID` | 否 | 命名空间 ID（默认：`1`） |
-| `GOPLOY_DEBUG` | 否 | 设置为 `1` 启用 HTTP 调试日志 |
-| `GOPLOY_INSECURE_SKIP_VERIFY` | 否 | 设置为 `1` 跳过 HTTPS 证书验证 |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GOPLOY_URL` | Yes | Goploy server URL (e.g. `https://goploy.example.com`) |
+| `GOPLOY_API_KEY` | Yes | API key (generate in Goploy UI → User → API Key) |
+| `GOPLOY_NAMESPACE_ID` | No | Namespace ID (default: `1`) |
+| `GOPLOY_DEBUG` | No | Set to `1` to enable HTTP debug logging |
+| `GOPLOY_INSECURE_SKIP_VERIFY` | No | Set to `1` to skip HTTPS certificate verification |
 
-## 命令参考
+## Command Reference
 
-### 1. 列表查询
+### 1. List Queries
 
 ```bash
-# 列出所有项目
+# List all projects
 goploy ls
 
-# 按关键词过滤（模糊匹配）
+# Filter by keyword (fuzzy matching)
 goploy ls --keyword myapp
 
-# 查看最近部署历史
+# View recent deployment history
 goploy history my-project --limit 10
 ```
 
-### 2. 部署操作
+### 2. Deployment Operations
 
 ```bash
-# 按项目名和分支部署
+# Deploy by project name and branch
 goploy publish my-project --branch main
 
-# 按项目 ID 和提交号部署
+# Deploy by project ID and commit hash
 goploy publish 42 --commit abc123456
 
-# 部署后立即等待完成（推荐）
+# Deploy and wait for completion (recommended)
 goploy publish my-project --branch main --wait
 
-# 指定超时时间（秒）
+# Specify timeout in seconds
 goploy publish my-project --wait --timeout 600
 ```
 
-### 3. 状态查询
+### 3. Status Queries
 
 ```bash
-# 查询部署状态（快照）
+# Query deployment status (snapshot)
 goploy status <token>
 
-# 轮询等待部署完成
+# Poll until deployment completes
 goploy wait <token>
 
-# 自定义超时
+# Custom timeout
 goploy wait <token> --timeout 300
 
-# 查看详细日志
+# View detailed logs
 goploy trace <token> --detail
 ```
 
-### 4. 版本管理
+### 4. Version Management
 
 ```bash
-# 查看部署历史
+# View deployment history
 goploy history my-project
 goploy history my-project --limit 5
 
-# 回滚到前一版本
+# Rollback to previous version
 goploy rebuild <token>
 
-# 重置卡住的项目状态
+# Reset stuck project status
 goploy reset my-project
 ```
 
-### 5. 配置管理
+### 5. Configuration Management
 
 ```bash
-# 验证配置
+# Verify configuration
 goploy config check
 
-# 查看所有可用命令
+# View all available commands
 goploy --help
 goploy <command> --help
 ```
 
-## MCP 服务器（AI Agent 集成）
+## MCP Server (AI Agent Integration)
 
-本包提供 Model Context Protocol (MCP) 服务器，支持与 Claude、Cursor 等 AI 工具无缝集成。
+This package provides a Model Context Protocol (MCP) server for seamless integration with Claude, Cursor and other AI tools.
 
-### Claude Code 集成
+### Claude Code Integration
 
 ```bash
-# 1. 设置环境变量
+# 1. Set environment variables
 export GOPLOY_URL=https://goploy.example.com
 export GOPLOY_API_KEY=xxx
 export GOPLOY_NAMESPACE_ID=1
 
-# 2. 添加 MCP 服务器
+# 2. Add MCP server
 claude mcp add goploy -- npx -y goploy-cli mcp
 ```
 
-### Cursor / 其他 MCP 客户端
+### Cursor / Other MCP Clients
 
-在 MCP 配置文件中添加：
+Add to your MCP configuration file:
 
 ```json
 {
@@ -248,54 +248,54 @@ claude mcp add goploy -- npx -y goploy-cli mcp
 }
 ```
 
-### 可用 MCP 工具
+### Available MCP Tools
 
-| 工具 | 说明 |
-|------|------|
-| `list_projects` | 列出所有可部署的项目（支持关键词过滤） |
-| `resolve_project` | 按名称或 ID 查询项目（支持模糊匹配） |
-| `publish` | 触发部署（返回 token，不等待完成） |
-| `get_publish_status` | 获取部署状态快照 |
-| `wait_for_publish` | 轮询等待部署完成 |
-| `get_publish_trace` | 获取部署详细日志 |
-| `rebuild` | 回滚到上一版本 |
-| `list_recent_deployments` | 查看部署历史 |
-| `reset_project_state` | 解锁卡住的项目 |
+| Tool | Description |
+|------|-------------|
+| `list_projects` | List all deployable projects (supports keyword filtering) |
+| `resolve_project` | Query projects by name or ID (fuzzy matching) |
+| `publish` | Trigger deployment (returns token, does not wait) |
+| `get_publish_status` | Get deployment status snapshot |
+| `wait_for_publish` | Poll until deployment finishes |
+| `get_publish_trace` | Get detailed deployment logs |
+| `rebuild` | Rollback to previous version |
+| `list_recent_deployments` | View deployment history |
+| `reset_project_state` | Unlock stuck projects |
 
-## 进阶用法
+## Advanced Usage
 
-### 输出格式
+### Output Formats
 
 ```bash
-# JSON 格式（默认，适合管道处理）
+# JSON format (default, good for piping)
 goploy ls --format json
 
-# 表格格式（人类友好）
+# Table format (human-friendly)
 goploy ls --format table
 
-# 简洁格式
+# Plain format
 goploy ls --format plain
 ```
 
-### 错误处理与调试
+### Error Handling & Debugging
 
 ```bash
-# 启用调试日志
+# Enable debug logging
 export GOPLOY_DEBUG=1
 goploy ls
 
-# 检查 HTTPS 证书（自签名证书）
+# Skip HTTPS verification (self-signed certificates)
 export GOPLOY_INSECURE_SKIP_VERIFY=1
 goploy config check
 
-# 查看详细的 HTTP 请求/响应
+# View detailed HTTP requests/responses
 goploy publish my-project --branch main --no-wait 2>&1 | tee deploy.log
 ```
 
-### CI/CD 集成
+### CI/CD Integration
 
 ```bash
-# GitHub Actions 示例
+# GitHub Actions example
 - name: Deploy with goploy
   env:
     GOPLOY_URL: ${{ secrets.GOPLOY_URL }}
@@ -304,7 +304,7 @@ goploy publish my-project --branch main --no-wait 2>&1 | tee deploy.log
   run: |
     npx -y goploy-cli publish my-project --branch main --wait
 
-# GitLab CI 示例
+# GitLab CI example
 deploy:
   script:
     - npx -y goploy-cli publish my-project --branch main --wait
@@ -312,72 +312,72 @@ deploy:
     name: production
 ```
 
-## 生成 API 密钥
+## Generating an API Key
 
-1. 登录 Goploy Web UI
-2. 进入用户设置
-3. 点击"生成 API 密钥"
-4. 复制密钥并设置为 `GOPLOY_API_KEY` 环境变量
+1. Log in to your Goploy Web UI
+2. Go to User Settings
+3. Click "Generate API Key"
+4. Copy the key and set it as `GOPLOY_API_KEY` environment variable
 
-或通过 API：
+Or via API:
 
 ```bash
 curl -X PUT https://goploy.example.com/user/generateApiKey \
   -H "Cookie: your-session-cookie"
 ```
 
-## 安全与风险提示（使用前必读）
+## Security & Risk Warnings (Please Read Before Use)
 
-本工具可供 AI Agent 调用以自动化 Goploy 部署操作。请注意以下风险：
+This tool can be invoked by AI Agents to automate Goploy deployment operations. Please be aware of the following risks:
 
-⚠️ **重大风险**：
-- 模型幻觉可能导致执行错误的部署命令
-- API 密钥泄露可能导致未授权的部署操作
-- 错误的部署可能导致生产环境服务中断
-- 日志可能包含敏感信息（代码、配置等）
+⚠️ **Major Risks**:
+- Model hallucinations may cause execution of incorrect deployment commands
+- API key leakage may result in unauthorized deployment operations
+- Incorrect deployments may cause production environment outages
+- Logs may contain sensitive information (code, configurations, etc.)
 
-🔒 **最佳实践**：
-- 使用权限最小原则：创建仅用于部署的专用 Goploy 账户
-- 定期轮换 API 密钥，记录所有使用情况
-- 在 CI/CD 中使用 `--wait` 确保部署完成前阻塞流程
-- 对重要部署启用 `trace` 日志以追踪问题
-- 建议在预发布/测试环境验证后再部署到生产
-- 不要将 `.env` 文件或密钥提交到版本控制系统
-- 使用只读的 `ls` 和 `status` 命令进行验证，不要盲目执行 `publish`
+🔒 **Best Practices**:
+- Use the principle of least privilege: create a dedicated Goploy account for deployments only
+- Regularly rotate API keys and keep usage records
+- Use `--wait` in CI/CD to block until deployment completes
+- Enable `trace` logging for important deployments to track issues
+- It's recommended to verify in pre-release/testing environments before deploying to production
+- Never commit `.env` files or keys to version control
+- Use read-only `ls` and `status` commands for verification, don't blindly execute `publish`
 
-## 开发
+## Development
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 监视模式开发
+# Watch mode development
 npm run dev
 
-# 测试
+# Run tests
 npm test
 
-# 生产构建
+# Production build
 npm run build
 ```
 
-## 许可证
+## License
 
-本项目基于 **MIT 许可证** 开源。
+MIT License
 
-该软件运行时会调用 Goploy 的 API，使用这些 API 需要遵守相关服务条款。
+This software calls Goploy APIs at runtime. Using these APIs requires compliance with relevant terms of service.
 
-## 贡献
+## Contributing
 
-欢迎社区贡献！如果你发现 bug 或有功能建议，请：
+Contributions are welcome! If you find bugs or have feature suggestions, please:
 
-1. 提交 [Issue](https://github.com/goploy-devops/goploy-cli/issues)
-2. 提交 [Pull Request](https://github.com/goploy-devops/goploy-cli/pulls)
+1. Submit an [Issue](https://github.com/goploy-devops/goploy-cli/issues)
+2. Submit a [Pull Request](https://github.com/goploy-devops/goploy-cli/pulls)
 
-对于较大的改动，建议先通过 Issue 与我们讨论。
+For major changes, it's recommended to discuss first via Issue.
 
-## 相关链接
+## Links
 
-- [Goploy 项目](https://github.com/zhenorzz/goploy)
-- [npm 包](https://www.npmjs.com/package/goploy-cli)
-- [GitHub 仓库](https://github.com/goploy-devops/goploy-cli)
+- [Goploy Project](https://github.com/zhenorzz/goploy)
+- [npm Package](https://www.npmjs.com/package/goploy-cli)
+- [GitHub Repository](https://github.com/goploy-devops/goploy-cli)

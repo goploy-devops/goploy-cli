@@ -10,7 +10,7 @@ Official CLI tool for [Goploy](https://github.com/zhenorzz/goploy) — enabling 
 
 Tested against Goploy ≥ 1.17.5
 
-[Installation](#installation--quick-start) · [Why goploy-cli](#why-choose-goploy-cli) · [Features](#features) · [Workflow](#workflow) · [MCP Server](#mcp-server-ai-agent-integration) · [Advanced Usage](#advanced-usage) · [Security](#security--risk-warnings-please-read-before-use) · [Contributing](#contributing)
+[Installation](#installation--quick-start) · [Why goploy-cli](#why-choose-goploy-cli) · [Features](#features) · [Workflow](#workflow) · [Skill Installation](#skill-installation) · [MCP Server](#mcp-server-ai-agent-integration) · [Advanced Usage](#advanced-usage) · [Security](#security--risk-warnings-please-read-before-use) · [Contributing](#contributing)
 
 ## Why Choose goploy-cli?
 
@@ -257,6 +257,80 @@ goploy ls --keyword my-app      # Query projects
 goploy publish 42 --branch main # Deploy by ID and branch
 goploy wait <token> --timeout 300  # Wait for deployment to complete
 ```
+
+## Skill Installation
+
+Installing goploy-cli Skill enables AI Agents (Claude, Cursor, etc.) to use all deployment capabilities through MCP (Model Context Protocol).
+
+### Quick Installation
+
+**For Claude Code:**
+
+```bash
+# 1. Install CLI globally
+npm install -g goploy-cli
+
+# 2. Set environment variables
+export GOPLOY_URL=https://goploy.example.com
+export GOPLOY_API_KEY=your-api-key-here
+export GOPLOY_NAMESPACE_ID=1
+
+# 3. Add MCP server to Claude
+claude mcp add goploy -- npx -y goploy-cli mcp
+```
+
+**For Cursor / VSCode:**
+
+Add to your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "goploy": {
+      "command": "npx",
+      "args": ["-y", "goploy-cli", "mcp"],
+      "env": {
+        "GOPLOY_URL": "https://goploy.example.com",
+        "GOPLOY_API_KEY": "your-key",
+        "GOPLOY_NAMESPACE_ID": "1"
+      }
+    }
+  }
+}
+```
+
+### Available AI Tools After Installation
+
+| Tool | Function |
+|------|----------|
+| `list_projects` | List all projects |
+| `resolve_project` | Query project (fuzzy match) |
+| `publish` | Trigger deployment |
+| `get_publish_status` | Query status |
+| `wait_for_publish` | Wait for completion |
+| `get_publish_trace` | View logs |
+| `rebuild` | Rollback version |
+| `list_recent_deployments` | View history |
+| `reset_project_state` | Reset stuck project |
+
+### Detailed Installation Guide
+
+For comprehensive installation instructions across Docker, npm package, and other methods, see [SKILL_INSTALL.md](./SKILL_INSTALL.md).
+
+### Verify Installation
+
+Test if the Skill is correctly loaded:
+
+```bash
+# Test CLI
+goploy config check
+
+# Test MCP server
+goploy mcp
+```
+
+In Claude/Cursor, send a request to test:
+> "List all deployable projects"
 
 ## Environment Variables
 

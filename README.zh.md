@@ -10,7 +10,7 @@
 
 已支持 Goploy ≥ 1.17.5
 
-[安装](#安装与快速开始) · [为什么选择](#为什么选择-goploy-cli) · [功能](#功能) · [工作流程](#工作流程) · [技能安装](#技能安装) · [MCP 服务器](#mcp-服务器ai-agent-集成) · [进阶用法](#进阶用法) · [安全](#安全与风险提示使用前必读) · [贡献](#贡献)
+[安装](#安装与快速开始) · [为什么选择](#为什么选择-goploy-cli) · [功能](#功能) · [工作流程](#工作流程) · [MCP 服务器](#mcp-服务器ai-agent-集成) · [进阶用法](#进阶用法) · [安全](#安全与风险提示使用前必读) · [贡献](#贡献)
 
 ## 为什么选择 goploy-cli？
 
@@ -257,79 +257,6 @@ goploy ls --keyword my-app      # 查询项目
 goploy publish 42 --branch main # 按 ID 和分支部署
 goploy wait <token> --timeout 300  # 等待部署完成
 ```
-## 技能安装
-
-安装 goploy-cli Skill 后，AI 代理（Claude、Cursor 等）可通过 MCP（Model Context Protocol）使用所有部署功能。
-
-### 快速安装
-
-**用于 Claude Code：**
-
-```bash
-# 1. 全局安装 CLI
-npm install -g goploy-cli
-
-# 2. 设置环境变量
-export GOPLOY_URL=https://goploy.example.com
-export GOPLOY_API_KEY=your-api-key-here
-export GOPLOY_NAMESPACE_ID=1
-
-# 3. 向 Claude 添加 MCP 服务器
-claude mcp add goploy -- npx -y goploy-cli mcp
-```
-
-**用于 Cursor / VSCode：**
-
-添加到 MCP 配置文件：
-
-```json
-{
-  "mcpServers": {
-    "goploy": {
-      "command": "npx",
-      "args": ["-y", "goploy-cli", "mcp"],
-      "env": {
-        "GOPLOY_URL": "https://goploy.example.com",
-        "GOPLOY_API_KEY": "your-key",
-        "GOPLOY_NAMESPACE_ID": "1"
-      }
-    }
-  }
-}
-```
-
-### 安装后可用的 AI 工具
-
-| 工具 | 功能 |
-|------|------|
-| `list_projects` | 列出所有项目 |
-| `resolve_project` | 查询项目（模糊匹配） |
-| `publish` | 触发部署 |
-| `get_publish_status` | 查询状态 |
-| `wait_for_publish` | 等待完成 |
-| `get_publish_trace` | 查看日志 |
-| `rebuild` | 回滚版本 |
-| `list_recent_deployments` | 查看历史 |
-| `reset_project_state` | 重置卡死项目 |
-
-### 详细安装指南
-
-了解 Docker、npm package 等更多安装方法，请参考 [SKILL_INSTALL.md](./SKILL_INSTALL.md)。
-
-### 验证安装
-
-测试 Skill 是否正确加载：
-
-```bash
-# 测试 CLI
-goploy config check
-
-# 测试 MCP 服务器
-goploy mcp
-```
-
-在 Claude/Cursor 中发送请求测试：
-> "列出所有可部署项目"
 ## 环境变量配置
 
 | 变量 | 必需 | 说明 |
@@ -461,6 +388,23 @@ claude mcp add goploy -- npx -y goploy-cli mcp
 | `rebuild` | 回滚到上一版本 |
 | `list_recent_deployments` | 查看部署历史 |
 | `reset_project_state` | 解锁卡住的项目 |
+
+### 验证连接
+
+```bash
+# 验证 CLI 配置是否正确
+goploy config check
+
+# 启动 MCP 服务器（由 Claude/Cursor 自动调用）
+goploy mcp
+```
+
+向 Claude/Cursor 发送测试提示：
+> "列出所有可部署项目"
+
+### 完整安装指南
+
+了解 Docker、npm package 及 CI/CD 集成等更多安装方法，请参考 [SKILL_INSTALL.md](./SKILL_INSTALL.md)。
 
 ## 进阶用法
 

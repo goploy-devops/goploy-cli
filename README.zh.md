@@ -10,7 +10,7 @@
 
 已支持 Goploy ≥ 1.17.5
 
-[安装](#安装与快速开始) · [为什么选择](#为什么选择-goploy-cli) · [功能](#功能) · [快速开始](#快速开始) · [MCP 服务器](#mcp-服务器) · [进阶用法](#进阶用法) · [安全](#安全与风险提示使用前必读) · [贡献](#贡献)
+[安装](#安装与快速开始) · [为什么选择](#为什么选择-goploy-cli) · [功能](#功能) · [工作流程](#工作流程) · [MCP 服务器](#mcp-服务器ai-agent-集成) · [进阶用法](#进阶用法) · [安全](#安全与风险提示使用前必读) · [贡献](#贡献)
 
 ## 为什么选择 goploy-cli？
 
@@ -31,6 +31,134 @@
 | 📜 历史管理 | 部署历史查询、版本回滚、前一版本快速恢复 |
 | 🔒 多租户 | 支持命名空间隔离、多项目并行管理 |
 | 🤖 AI 友好 | MCP 服务器集成、结构化 JSON 输出、命令链组合 |
+
+## 工作流程
+
+### 标准部署工作流
+
+以下是使用 goploy-cli 部署的典型流程：
+
+```
+1. 查询项目
+   └─ goploy ls [--keyword 关键词]
+      返回：项目列表（ID、名称等）
+
+2. 解析项目
+   └─ 内部匹配用户输入到确切的项目
+      （支持模糊匹配）
+
+3. 确认部署
+   └─ Agent/用户审核：项目名称、分支、提交号
+      决定：继续或中止
+
+4. 触发部署
+   └─ goploy publish <project_id> [--branch] [--commit]
+      返回：部署 token
+
+5. 监控进度
+   └─ goploy wait <token> [--timeout 600]
+      轮询到：成功/失败/超时
+
+6. 失败处理
+   └─ goploy trace <token> --detail
+      返回：错误日志和诊断信息
+
+7. 部署后
+   └─ 回滚：goploy rebuild <token>
+      或查看历史：goploy history <project>
+```
+
+### 常见用例
+
+#### 用例 1：快速部署（人类用户）
+
+```bash
+# 1. 列出项目，查找要部署的项目
+$ goploy ls --keyword api
+
+# 2. 部署并等待完成
+$ goploy publish api-service --branch main --wait
+
+# 3. 查看状态
+$ goploy status <token>
+```
+
+#### 用例 2：部署管道（CI/CD）
+
+```bash
+# 1. 按 ID 查询项目（更快）
+$ PROJECT_ID=$(goploy ls --format json | jq '.[0].id')
+
+# 2. 部署特定提交，并等待完成
+$ TOKEN=$(goploy publish $PROJECT_ID --commit $GIT_SHA --wait)
+
+# 3. 验证成功
+$ goploy status $TOKEN
+```
+
+#### 用例 3：AI Agent 部署
+
+```bash
+# 1. Agent 列出项目
+> "列出所有匹配 'frontend' 的项目"
+  
+# 2. Agent 确认部署
+> "部署 frontend-app 到 main 分支"
+  确认？ [y/n]
+
+# 3. Agent 触发并监控
+> "正在发布... (轮询状态)"
+  ✓ 部署成功
+```
+
+#### 用例 4：紧急回滚
+
+```bash
+# 1. 查看最近的部署
+$ goploy history my-project --limit 5
+
+# 2. 回滚到前一版本
+$ goploy rebuild <previous_token>
+
+# 3. 监控回滚
+$ goploy wait <new_token>
+```
+
+#### 用例 5：处理卡住的部署
+
+```bash
+# 1. 如果项目卡在"部署中"状态，重置项目
+$ goploy reset my-project
+
+# 2. 检查是否重置成功
+$ goploy status <project_id>
+
+# 3. 重新尝试部署
+$ goploy publish my-project --branch main
+```
+
+### 决策流程
+
+```
+开始
+  │
+  ├─ 你知道项目名称吗？
+  │  ├─ 是 → goploy publish <name> --branch <branch>
+  │  └─ 否 → goploy ls [--keyword 过滤]
+  │
+  ├─ 部署成功了吗？
+  │  ├─ 是 → 完成！查看日志：goploy trace <token>
+  │  ├─ 否 → goploy trace <token> --detail（查看错误）
+  │  ├─ 超时 → goploy wait <token> --timeout 900（延长超时）
+  │  └─ 卡住 → goploy reset <project>（强制重置）
+  │
+  ├─ 需要回滚吗？
+  │  ├─ 是 → goploy history <project>（查看历史）
+  │  │  └─ goploy rebuild <old_token>（执行回滚）
+  │  └─ 否 → 完成
+  │
+  └─ 结束
+```
 
 ## 安装与快速开始
 

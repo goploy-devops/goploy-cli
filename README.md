@@ -10,7 +10,7 @@ Official CLI tool for [Goploy](https://github.com/zhenorzz/goploy) — enabling 
 
 Tested against Goploy ≥ 1.17.5
 
-[Installation](#installation--quick-start) · [Why goploy-cli](#why-choose-goploy-cli) · [Features](#features) · [Getting Started](#getting-started) · [MCP Server](#mcp-server-ai-agent-integration) · [Advanced Usage](#advanced-usage) · [Security](#security--risk-warnings-please-read-before-use) · [Contributing](#contributing)
+[Installation](#installation--quick-start) · [Why goploy-cli](#why-choose-goploy-cli) · [Features](#features) · [Workflow](#workflow) · [MCP Server](#mcp-server-ai-agent-integration) · [Advanced Usage](#advanced-usage) · [Security](#security--risk-warnings-please-read-before-use) · [Contributing](#contributing)
 
 ## Why Choose goploy-cli?
 
@@ -31,6 +31,134 @@ Tested against Goploy ≥ 1.17.5
 | 📜 History Management | Deployment history queries, version rollback, quick recovery to previous version |
 | 🔒 Multi-Tenancy | Namespace isolation support, multi-project parallel management |
 | 🤖 AI-Friendly | MCP server integration, structured JSON output, command chaining |
+
+## Workflow
+
+### Standard Deployment Workflow
+
+Here's the typical flow when deploying with goploy-cli:
+
+```
+1. Query Projects
+   └─ goploy ls [--keyword filter]
+      Returns: Project list with IDs and names
+
+2. Resolve Project
+   └─ Internally matches user input to exact project
+      (Support fuzzy matching if needed)
+
+3. Confirm Deployment
+   └─ Agent/User reviews: project name, branch, commit
+      Decision: Proceed or Abort
+
+4. Trigger Deployment
+   └─ goploy publish <project_id> [--branch] [--commit]
+      Returns: Deployment token
+
+5. Monitor Progress
+   └─ goploy wait <token> [--timeout 600]
+      Polls until: Success/Failure/Timeout
+
+6. On Failure
+   └─ goploy trace <token> --detail
+      Returns: Error logs and diagnostics
+
+7. Post-Deployment
+   └─ Rollback: goploy rebuild <token>
+      OR Check history: goploy history <project>
+```
+
+### Common Use Cases
+
+#### Use Case 1: Quick Deploy (Human)
+
+```bash
+# 1. List projects to find the one to deploy
+$ goploy ls --keyword api
+
+# 2. Deploy with auto-completion
+$ goploy publish api-service --branch main --wait
+
+# 3. Check status
+$ goploy status <token>
+```
+
+#### Use Case 2: Deployment Pipeline (CI/CD)
+
+```bash
+# 1. Find project by ID (faster)
+$ PROJECT_ID=$(goploy ls --format json | jq '.[0].id')
+
+# 2. Deploy specific commit with wait
+$ TOKEN=$(goploy publish $PROJECT_ID --commit $GIT_SHA --wait)
+
+# 3. Verify success
+$ goploy status $TOKEN
+```
+
+#### Use Case 3: AI Agent Deployment
+
+```bash
+# 1. Agent lists projects
+> "List projects matching 'frontend'"
+  
+# 2. Agent confirms deployment
+> "Deploy frontend-app on main branch"
+  confirm? [y/n]
+
+# 3. Agent triggers and monitors
+> "Publishing... (polling status)"
+  ✓ Deployment succeeded
+```
+
+#### Use Case 4: Emergency Rollback
+
+```bash
+# 1. Check recent deployments
+$ goploy history my-project --limit 5
+
+# 2. Rollback to previous version
+$ goploy rebuild <previous_token>
+
+# 3. Monitor rollback
+$ goploy wait <new_token>
+```
+
+#### Use Case 5: Handle Stuck Deployments
+
+```bash
+# 1. Reset project if stuck in "deploying" state
+$ goploy reset my-project
+
+# 2. Check if reset was successful
+$ goploy status <project_id>
+
+# 3. Retry deployment
+$ goploy publish my-project --branch main
+```
+
+### Decision Tree
+
+```
+START
+  │
+  ├─ Do you know the project name?
+  │  ├─ Yes → goploy publish <name> --branch <branch>
+  │  └─ No → goploy ls [--keyword filter]
+  │
+  ├─ Deploy succeeded?
+  │  ├─ Yes → Done! Check logs with goploy trace <token>
+  │  ├─ No → goploy trace <token> --detail (see error)
+  │  ├─ Timeout → goploy wait <token> --timeout 900 (extend timeout)
+  │  └─ Stuck → goploy reset <project> (force reset)
+  │
+  ├─ Need to rollback?
+  │  ├─ Yes → goploy history <project> (check history)
+  │  │  └─ goploy rebuild <old_token> (rollback)
+  │  └─ No → Done
+  │
+  └─ END
+```
 
 ## Installation & Quick Start
 

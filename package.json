@@ -1,0 +1,45 @@
+{
+  "name": "goploy-cli",
+  "version": "0.1.0",
+  "description": "CLI & MCP server for Goploy deployment system",
+  "type": "module",
+  "bin": {
+    "goploy": "dist/cli.js"
+  },
+  "main": "dist/mcp.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "goploy",
+    "deploy",
+    "cli",
+    "mcp",
+    "ci-cd"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "commander": "^12.1.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "msw": "^2.7.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.3"
+  }
+}
